@@ -1,0 +1,27 @@
+
+<odoo>
+    <record id="view_hotel_form_inherited" model="ir.ui.view">
+        <field name="name">hotel.management.hotel.form.inherit</field>
+        <field name="model">hotel.management.hotel</field>
+        <field name="inherit_id" ref="om_hotel.view_hotel_form"/>
+        <field name="arch" type="xml">
+            <sheet position="inside">
+                <group string="Search Booking">
+                    <field name="search_customer_name" placeholder="Enter Customer Name"/>
+                </group>
+                <notebook>
+                    <page string="Booking History">
+                        <field name="booking_ids">
+                            <list string="Booking History">
+                                <field name="customer_name"/>
+                                <field name="room_id"/>
+                                <field name="check_in_date"/>
+                                <field name="check_out_date"/>
+                            </list>
+                        </field>
+                    </page>
+                </notebook>
+            </sheet>
+        </field>
+    </record>
+</odoo>

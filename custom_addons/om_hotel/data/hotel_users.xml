@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <!-- Tạo người dùng với các quyền khác nhau -->
+        <record id="user_employee" model="res.users">
+            <!-- Tạo người dùng "Employee User" với tên đăng nhập "employee" -->
+            <field name="name">Employee User</field>
+            <field name="login">employee</field>
+            <!-- Gán người dùng này vào nhóm "group_hotel_employee" (nhóm nhân viên khách sạn) -->
+            <field name="groups_id" eval="[(6, 0, [ref('om_hotel.group_hotel_employee')])]"/>
+        </record>
+
+        <record id="user_manager" model="res.users">
+            <!-- Tạo người dùng "Manager User" với tên đăng nhập "hotel_manager" -->
+            <field name="name">Manager User</field>
+            <field name="login">hotel_manager</field>
+            <!-- Gán người dùng này vào nhóm "group_hotel_manager" (nhóm quản lý khách sạn) -->
+            <field name="groups_id" eval="[(6, 0, [ref('om_hotel.group_hotel_manager')])]"/>
+        </record>
+
+        <record id="user_admin" model="res.users">
+            <!-- Tạo người dùng "Admin User" với tên đăng nhập "admin" -->
+            <field name="name">Admin User</field>
+            <field name="login">admin</field>
+            <!-- Gán người dùng này vào nhóm "group_hotel_admin" (nhóm quản trị viên khách sạn) -->
+            <field name="groups_id" eval="[(6, 0, [ref('om_hotel.group_hotel_admin')])]"/>
+        </record>
+    </data>
+
+    <data noupdate="1">
+        <!-- Tạo nhân viên và liên kết với các người dùng đã tạo ở trên -->
+        <record id="employee_employee" model="hr.employee">
+            <!-- Tạo nhân viên "Employee" và liên kết với người dùng "user_employee" -->
+            <field name="name">Employee</field>
+            <field name="user_id" ref="user_employee"/>
+        </record>
+
+        <record id="employee_manager" model="hr.employee">
+            <!-- Tạo nhân viên "Manager" và liên kết với người dùng "user_manager" -->
+            <field name="name">Manager</field>
+            <field name="user_id" ref="user_manager"/>
+        </record>
+
+        <record id="employee_admin" model="hr.employee">
+            <!-- Tạo nhân viên "Admin" và liên kết với người dùng "user_admin" -->
+            <field name="name">Admin</field>
+            <field name="user_id" ref="user_admin"/>
+        </record>
+    </data>
+</odoo>

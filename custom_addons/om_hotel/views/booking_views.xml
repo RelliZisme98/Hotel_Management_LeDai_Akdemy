@@ -1,0 +1,54 @@
+<odoo>
+    <record id="action_hotel_management_bookings" model="ir.actions.act_window">
+        <field name="name">Bookings</field>
+        <field name="res_model">hotel.management.booking</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p>Manage bookings for hotel rooms.</p>
+        </field>
+    </record>
+
+    <record id="view_booking_list" model="ir.ui.view">
+        <field name="name">booking.list</field>
+        <field name="model">hotel.management.booking</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name"/>
+                <field name="customer_name"/>
+                <field name="hotel_id"/>
+                <field name="room_type"/>
+                <field name="room_id"/>
+                <field name="check_in_date"/>
+                <field name="check_out_date"/>
+                <field name="state"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_booking_form" model="ir.ui.view">
+        <field name="name">booking.form</field>
+        <field name="model">hotel.management.booking</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <field name="name"/>
+                        <field name="customer_name"/>
+                        <field name="booking_date"/>
+                        <field name="hotel_id"/>
+                        <field name="room_type"/>
+                        <field name="room_id"/>
+                        <field name="check_in_date"/>
+                        <field name="check_out_date"/>
+                        <field name="state"/>
+                    </group>
+                    <footer>
+                        <!-- Nút Confirm chỉ hiển thị khi trạng thái là 'new' -->
+                      <button name="confirm_booking" string="Confirm" type="object" class="btn-primary"
+                    studio_visibility="state != 'confirmed'"/>
+                    </footer>
+                </sheet>
+            </form>
+        </field>
+    </record>
+</odoo>

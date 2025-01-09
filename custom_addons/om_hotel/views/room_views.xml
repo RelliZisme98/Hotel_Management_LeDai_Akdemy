@@ -1,0 +1,50 @@
+<odoo>
+    <record id="action_hotel_management_rooms" model="ir.actions.act_window">
+        <field name="name">Rooms</field>
+        <field name="res_model">hotel.management.room</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p>
+                Manage the rooms of hotels. You can define their features, prices, and statuses.
+            </p>
+        </field>
+    </record>
+
+    <record id="view_room_list" model="ir.ui.view">
+        <field name="name">room.list</field>
+        <field name="model">hotel.management.room</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name"/>
+                <field name="hotel_id"/>
+                <field name="bed_type"/>
+                <field name="price"/>
+                <field name="state"/>
+                 <field name="last_rented_date"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_room_form" model="ir.ui.view">
+        <field name="name">room.form</field>
+        <field name="model">hotel.management.room</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <field name="name"/>
+                        <field name="hotel_id"/>
+                        <field name="address" readonly="1"/>
+                        <field name="bed_type"/>
+                        <field name="price"/>
+                        <field name="state"/>
+                        <field name="last_rented_date" readonly="1"/>
+                    </group>
+                    <group string="Features">
+                        <field name="feature_ids" widget="many2many_tags"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+</odoo>
