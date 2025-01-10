@@ -36,38 +36,53 @@ class Room(models.Model):
 
     @api.model
     def notify_unrented_rooms(self):
-        one_week_ago = fields.Date.today() - timedelta(days=7)
+        _logger.info("Starting the notification process for unrented rooms.")
+        seven_days_ago = fields.Date.today() - timedelta(days=7)
         unrented_rooms = self.search([
             ('state', '=', 'available'),
-            ('last_rented_date', '<', one_week_ago)
+            ('last_rented_date', '<=', seven_days_ago)
         ])
+        # if unrented_rooms:
+        #     mail_template = self.env.ref('hotel_management.unrented_room_email_template')
+        #     for room in unrented_rooms:
+        #         if room.hotel_id.manager_id.email:
+        #             _logger.info(f"Sending email for room: {room.name}")
+        #             mail_template.with_context(
+        #                 room_name=room.name,
+        #                 hotel_name=room.hotel_id.name,
+        #                 manager_email=room.hotel_id.manager_id. email
+        #             ).send_mail(room.id, force_send=True)
+        # else:
+        #     _logger.info("No unrented rooms found.")
+        # if unrented_rooms:
+        #     for room in unrented_rooms:
+        #         _logger.info(f"Processing notification for room: {room.name}")
+        #         # Lấy email template
+        #         template = self.env.ref('hotel_management.email_template_unrented_room', raise_if_not_found=False)
+        #         if template:
+        #             template.send_mail(room.id, force_send=True)
+        #             _logger.info(f"Email notification sent for room: {room.name}")
+        #         else:
+        #             _logger.warning("Email template not found.")
+        # else:
+        #     _logger.info("No unrented rooms found.")
+        # _logger.info(f"Seven days ago: {seven_days_ago}")
+        # _logger.info(f"Rooms found matching criteria: {len(unrented_rooms)}")
         if unrented_rooms:
-            room_names = ', '.join(unrented_rooms.mapped('name'))
-            message = f"The following rooms have not been rented for more than a week: {room_names}. Consider reducing prices."
-            self.env['mail.message'].create({
-                'subject': 'Unrented Rooms Notification',
-                'body': message,
-                'message_type': 'notification',
-                'subtype_id': self.env.ref('mail.mt_comment').id,
-                'partner_ids': self.env.user.partner_id.ids,
-            })
-
-            @api.model
-            def notify_unrented_rooms(self):
-                seven_days_ago = datetime.today() - timedelta(days=7)
-                rooms = self.search([
-                    ('state', '=', 'available'),
-                    ('last_rented_date', '<', seven_days_ago)
-                ])
-
-                if rooms:
-                    # Example: Send email or notification
-                    mail_template = self.env.ref('om_hotel.email_template_unrented_rooms')
-                    for room in rooms:
-                        mail_template.send_mail(room.id, force_send=True)
-                        _logger.info(f"Notification sent for room: {room.name}")
-                    return True
+            for room in unrented_rooms:
+                message = f"Room '{room.name}' in hotel '{room.hotel_id.name}' has not been rented for over a week."
+                _logger.info(f"Notifying manager for room: {room.name}")
+                if room.hotel_id.manager_id.user_id:
+                    partner = room.hotel_id.manager_id.user_id.partner_id  # Lấy partner từ user_id
+                    _logger.info(f"Partner found: {partner.name}, sending message...")
+                    partner.message_post(
+                        subject="Unrented Room Notification",
+                        body=message,
+                        message_type="notification",
+                    )
+                    _logger.info(f"Notification sent for room: {room.name}")
                 else:
-                    _logger.info("No unrented rooms found.")
-                    return False
-
+                    _logger.warning(f"Room {room.name} has no manager to notify.")
+                _logger.info(f"Access attempt logged for room: {room.name}")
+        else:
+            _logger.info("No unrented rooms found.")
